@@ -56,6 +56,7 @@ public class InvertedIndexer {
 			Text newValue = new Text();
 	        
 			String br = ":";
+			// git test
 	    	String content = "";
 	        while (values.hasNext()) {
 	        	content += values.next().toString() + br;
