@@ -9,11 +9,11 @@ import org.wltea.analyzer.core.*;
 
 public class InvertedIndexer {
 	//map类
-	public static class InvertedIndexerMapper extends MapReduceBase implements Mapper<Text, Text, Text, Text>
+	public static class InvertedIndexerMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text>
 	{
 		//	Return Single Value format as:
 		//	DID;Rank(Hot);URL;Position
-		public void map(Text key,Text val,OutputCollector<Text, Text> output, Reporter reporter
+		public void map(LongWritable key,Text val,OutputCollector<Text, Text> output, Reporter reporter
 				) throws IOException 
 		{
 			//	Split Content
@@ -35,6 +35,7 @@ public class InvertedIndexer {
 					Text keyWord = new Text(lex.getLexemeText());
 					String position = Integer.toString(lex.getBeginPosition());
 					Text curValue = new Text(Content + br + position);
+					//Text curValue = new Text("1");
 					
 					output.collect(keyWord, curValue);
 				}
@@ -72,7 +73,7 @@ public class InvertedIndexer {
 	      conf.setJobName("InvertedIndexer");
 	
 	      conf.setOutputKeyClass(Text.class);
-	      conf.setOutputValueClass(IntWritable.class);
+	      conf.setOutputValueClass(Text.class);
 	
 	      conf.setMapperClass(InvertedIndexerMapper.class);
 //	      conf.setCombinerClass(Combin.class);
