@@ -5,7 +5,8 @@ import java.util.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
-import org.wltea.analyzer.core.*;
+import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.Lexeme; 
 
 public class InvertedIndexer {
 	//map类
@@ -21,6 +22,17 @@ public class InvertedIndexer {
 			String[] str=val.toString().split(spl);		
 			if(str[3] != "null")
 			{
+//				System.out.println("key : "+ str[0]);
+//				System.out.println();
+//				System.out.println("URL : "+str[1]);
+//				System.out.println();
+//				System.out.println("Title : "+str[2]);
+//				System.out.println();
+//				System.out.println("Body : "+str[3]);
+//				System.out.println();
+//				System.out.println("HOT : "+str[4]);
+//				System.out.println();
+				
 				String br = ";";
 				String Content = str[0] + br + str[4] + br + str[1];
 
@@ -30,12 +42,20 @@ public class InvertedIndexer {
 				IKSegmenter IK=new IKSegmenter(strreader,true);
 				Lexeme lex=null;
 				
+//				System.out.println("%%value start"+ str[2] + "" +str[3]);
+//				System.out.println();
+				
 				while((lex=IK.next())!=null)
-				{				
+				{	
+					
 					Text keyWord = new Text(lex.getLexemeText());
 					String position = Integer.toString(lex.getBeginPosition());
 					Text curValue = new Text(Content + br + position);
-					//Text curValue = new Text("1");
+					
+					System.out.println("key : " + keyWord);
+					System.out.println();
+					System.out.println("value : " + curValue);
+					System.out.println();
 					
 					output.collect(keyWord, curValue);
 				}
@@ -56,13 +76,21 @@ public class InvertedIndexer {
 			// 们的词频相加，不同的则组合在一起，形成上述的值的形式
 			Text newValue = new Text();
 	        
-			String br = ":";
-			// git test
-	    	String content = "";
-	        while (values.hasNext()) {
-	        	content += values.next().toString() + br;
-	        }
-	        newValue.set(content);
+//			String br = " ; ";
+//			// git test
+//	    	String content = "";
+//	        while (values.hasNext()) {
+//	        	content += values.next().toString() + br;
+//	        }
+//	        content += " ###&&### ";
+//	        newValue.set(content);
+	        
+	        newValue.set(values.next().toString());
+	        
+	        System.out.println("key : "+key);
+			System.out.println();
+			System.out.println("value : "+newValue);
+			System.out.println();
 	        
 	        output.collect(key, newValue);
 		}
